@@ -13,7 +13,7 @@ namespace AllAboutCollections
 
             /*Country[] countries = reader.ReadFirstNCountries(3);*/
             List<Country> countries = reader.ReadAllCountry();
-            Console.WriteLine("Enter number of countries to display");
+            Console.WriteLine("Enter number of countries to display at a time");
             string userInputString = Console.ReadLine();
             // TryParse returns a boolean , if it is true userInput will contain the valid int and we can go on normally 
             bool isInputInt = int.TryParse(userInputString, out int userInput);
@@ -21,10 +21,25 @@ namespace AllAboutCollections
             {
                 Console.WriteLine("Not a valid number");
             }
-            // This is to make sure that we don't pass the maximum numbers of countries in our csv. 
-            int maxLength = Math.Min(userInput, countries.Count);
-            for(int i = 0; i < maxLength; i++)
+
+
+            // Get how much numbers you want to display at a time 
+            int maxLength = userInput;
+            for(int i = 0; i < countries.Count; i++)
             {
+                // Will pause the number if it is more than one AND when the specified length is reached
+                // aka if u enter 5, it will loop 5 times and 5%5 == 0 which is true and it will ask user if you want to continue
+                if (i > 0 && (i % maxLength ==0) )
+                {
+                    Console.WriteLine("Press q to exist");
+
+                    string quit = "q";
+                    string answer = Console.ReadLine().ToLower();
+                    if (quit == answer)
+                    {
+                        break;
+                    }
+                }
                 Country country = countries[i];
                 Console.WriteLine($"{country.Population.ToString("N0").PadLeft(15)}| {country.Name}  {country.Code}");
             }
