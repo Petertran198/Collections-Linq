@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AllAboutCollections
 {
@@ -9,9 +10,14 @@ namespace AllAboutCollections
         {
 
             List<Country> countries = GetCountryList(@"C:\\Users\\peter\\source\\repos\\AllAboutCollections\\AllAboutCollections\arr.csv");
+            var filteredCountires = from country in countries 
+                                    where !country.Name.Contains(",")
+                                    select country; 
 
-            /*Country[] countries = reader.ReadFirstNCountries(3);*/
-            ReadCountriesFromStart();
+            foreach (var country in filteredCountires)
+            {
+                Console.WriteLine(country.Name);
+            }
         }
 
 
@@ -22,11 +28,54 @@ namespace AllAboutCollections
         {
             string filePath = file;
             CsvReader reader = new CsvReader(filePath);
-
             /*Country[] countries = reader.ReadFirstNCountries(3);*/
+
             List<Country> countries = reader.ReadAllCountry();
             return countries;
         }
+
+        public static void ReadCountriesFromStart()
+        {
+            List<Country> countries = GetCountryList(@"C:\Users\peter\source\repos\AllAboutCollections\AllAboutCollections\arr.csv");
+            
+
+            Console.WriteLine("Enter number of countries to display at a time");
+            string userInputString = Console.ReadLine();
+            // TryParse returns a boolean , if it is true userInput will contain the valid int and we can go on normally 
+            bool isInputInt = int.TryParse(userInputString, out int userInput);
+            if (!isInputInt || userInput <= 0)
+            {
+                Console.WriteLine("Not a valid number");
+            }
+
+            // Get how much numbers you want to display at a time 
+            int maxLength = userInput;
+            for (int i = 0; i < countries.Count; i++)
+            {
+                // Will pause the number if it is more than one AND when the specified length is reached
+                // aka if u enter 5, it will loop 5 times and 5%5 == 0 which is true and it will ask user if you want to continue
+                if (i > 0 && (i % maxLength == 0))
+                {
+                    Console.WriteLine("Press q to exist");
+
+                    string quit = "q";
+                    string answer = Console.ReadLine().ToLower();
+                    if (quit == answer)
+                    {
+                        break;
+                    }
+                }
+                Country country = countries[i];
+                Console.WriteLine($"{i + 1}. {country.Population.ToString("N0").PadLeft(15)}| {country.Name}  {country.Code}");
+            }
+        }
+
+
+
+
+
+
+
 
 
         // Read data from the list starting from the end
@@ -70,41 +119,7 @@ namespace AllAboutCollections
             }
         }
 
-        public static void ReadCountriesFromStart()
-        {
-            List<Country> countries = GetCountryList(@"C:\Users\peter\source\repos\AllAboutCollections\AllAboutCollections\arr.csv");
 
-            Console.WriteLine("Enter number of countries to display at a time");
-            string userInputString = Console.ReadLine();
-            // TryParse returns a boolean , if it is true userInput will contain the valid int and we can go on normally 
-            bool isInputInt = int.TryParse(userInputString, out int userInput);
-            if (!isInputInt || userInput <= 0)
-            {
-                Console.WriteLine("Not a valid number");
-            }
-
-
-            // Get how much numbers you want to display at a time 
-            int maxLength = userInput;
-            for (int i = 0; i < countries.Count; i++)
-            {
-                // Will pause the number if it is more than one AND when the specified length is reached
-                // aka if u enter 5, it will loop 5 times and 5%5 == 0 which is true and it will ask user if you want to continue
-                if (i > 0 && (i % maxLength == 0))
-                {
-                    Console.WriteLine("Press q to exist");
-
-                    string quit = "q";
-                    string answer = Console.ReadLine().ToLower();
-                    if (quit == answer)
-                    {
-                        break;
-                    }
-                }
-                Country country = countries[i];
-                Console.WriteLine($"{i+1}. {country.Population.ToString("N0").PadLeft(15)}| {country.Name}  {country.Code}");
-            }
-        }
 
 
     }

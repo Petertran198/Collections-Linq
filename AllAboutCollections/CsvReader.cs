@@ -104,7 +104,10 @@ namespace AllAboutCollections
 
         }
 
-
+         public void RemoveCountriesWithCommas(List<Country> countries)
+        {
+            countries.RemoveAll(x => x.Name.Contains(","));
+        }   
 
     }
 }
